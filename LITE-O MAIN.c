@@ -1,19 +1,49 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+/* ===================== TIPE DATA ===================== */
+
+typedef struct {
+    int x;
+    int y;
+    char nama[50];
+    int skor;
+} Hadiah;
+
+typedef struct {
+    int x;
+    int y;
+} Gerak;
+
+/* ===================== MESIN WAKTU ===================== */
+
+void tahan(float x) {
+    time_t start;
+    time_t current;
+    time(&start);
+    do
+        time(&current);
+    while (difftime(current, start) < x);
+}
+
+/* ===================== VARIABEL GLOBAL ===================== */
+
+int panjang, lebar;
+
+/* ===================== PROGRAM UTAMA ===================== */
 
 int main() {
-<<<<<<< Updated upstream
-    // Your code goes here
-    printf("Hello, World!\n");
-=======
+
     printf("Selamat Datang di Program Lite-O\n");
     printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
     scanf("%d %d", &panjang, &lebar);
 
-    printf("kia macbook");
-    /* TODO: tampilkan menu utama */
->>>>>>> Stashed changes
-
     printf("p anji");
     
+=======
+    /* TODO: tampilkan menu utama */
+
     return 0;
 }
