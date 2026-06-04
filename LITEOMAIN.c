@@ -38,9 +38,29 @@ int main() {
     printf("Selamat Datang di Program Lite-O\n");
     printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
     scanf("%d %d", &panjang, &lebar);
-    //lanjut buat sekuensial
+ 
 
     /* TODO: tampilkan menu utama */
+
+Gerak g;
+int n, i;
+FILE *gerak = fopen("tgerak.txt", "w");
+    printf("Jumlah gerakan : ");
+    scanf("%d", &n);
+    for(i = 0; i < n; i++)
+    { 
+        printf("Gerakan ke-%d \n", i + 1);
+        printf("x : ");
+        scanf("%d", &g.x);
+        printf("y : ");
+        scanf("%d", &g.y);
+        fprintf(gerak, "%d %d\n", g.x, g.y);
+    }
+    fprintf (gerak,"###");
+    fclose(gerak);
+
+
+
 
     return 0;
 }
