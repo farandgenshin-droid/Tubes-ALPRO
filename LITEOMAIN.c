@@ -38,6 +38,7 @@ int main() {
     printf("Selamat Datang di Program Lite-O\n");
     printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
     scanf("%d %d", &panjang, &lebar);
+    //lanjut buat sekuensial
 
     /* TODO: tampilkan menu utama */
 
