@@ -52,7 +52,12 @@ int main() {
         scanf(" %d", &menu);
 
         if(menu == 1) {
-            printf("\n[Fitur Tambah Hadiah Belum Diimplementasikan]\n");
+             Hadiah h;
+            FILE *Hadiah = fopen("thadiah.txt", "w") ;
+            printf("Input hadiah yang diinginkan : ");
+            scanf("%d %d %c %d", &h.x, &h.y, &h.nama, &h.skor);
+            fprintf(Hadiah, "###");
+            fclose(Hadiah); 
         }
         else if(menu == 2) {
         Gerak g;
