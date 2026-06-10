@@ -54,15 +54,16 @@ int main() {
         if(menu == 1) {
              Hadiah h;
              int hadiah, i;
-            FILE *Hadiah = fopen("thadiah.txt", "w") ;
+            FILE *TulisHadiah = fopen("thadiah.txt", "w") ;
             printf("Jumlah hadiah : ");
             scanf("%d", &hadiah);
             for(i = 0; i < hadiah; i++){
             printf("Input hadiah yang diinginkan : ");
-            scanf("%d %d %c %d", &h.x, &h.y, &h.nama, &h.skor);
+            scanf("%d %d %s %d", &h.x, &h.y, h.nama, &h.skor);
+            fprintf(TulisHadiah, "%d %d %s %d\n", h.x, h.y, h.nama, h.skor);
         }
-            fprintf(Hadiah, "###");
-            fclose(Hadiah); 
+            fprintf(TulisHadiah, "###");
+            fclose(TulisHadiah);     
         }
         else if(menu == 2) {
         Gerak g;
