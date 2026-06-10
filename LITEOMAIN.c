@@ -31,6 +31,7 @@ void tahan(float x) {
 /* ===================== VARIABEL GLOBAL ===================== */
 
 int panjang, lebar;
+int menu; 
 
 /* ===================== PROGRAM UTAMA ===================== */
 
@@ -39,12 +40,34 @@ int main() {
     printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
     scanf("%d %d", &panjang, &lebar);
  
+ while(1) {
+        printf("");
+        printf("Menu:\n");
+        printf("1.Tambah hadiah\n");
+        printf("2.Tambah gerak\n");
+        printf("3.Simulasi Lite-O\n");
+        printf("4.Keluar\n");
+        printf("Masukan Menu (1-4) : ");
 
-    /* TODO: tampilkan menu utama */
+        scanf(" %d", &menu);
 
-Gerak g;
-int n, i;
-FILE *gerak = fopen("tgerak.txt", "w");
+        if(menu == 1) {
+             Hadiah h;
+             int hadiah, i;
+            FILE *Hadiah = fopen("thadiah.txt", "w") ;
+            printf("Jumlah hadiah : ");
+            scanf("%d", &hadiah);
+            for(i = 0; i < hadiah; i++){
+            printf("Input hadiah yang diinginkan : ");
+            scanf("%d %d %c %d", &h.x, &h.y, &h.nama, &h.skor);
+        }
+            fprintf(Hadiah, "###");
+            fclose(Hadiah); 
+        }
+        else if(menu == 2) {
+        Gerak g;
+       int n, i;
+    FILE *gerak = fopen("tgerak.txt", "w");
     printf("Jumlah gerakan : ");
     scanf("%d", &n);
     for(i = 0; i < n; i++)
@@ -58,6 +81,19 @@ FILE *gerak = fopen("tgerak.txt", "w");
     }
     fprintf (gerak,"###");
     fclose(gerak);
+}
+        else if(menu == 3) {
+            // Memanggil fungsi simulasi  gameplay
+        }
+        else if(menu == 4) {
+            printf("\nTerima kasih telah bermain!\n");
+            break;
+        }
+        else {
+            printf("\nPilihan tidak valid! Silakan masukkan angka 1-4.\n");
+        }
+    }
+
 
 
 
