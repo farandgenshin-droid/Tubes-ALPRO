@@ -91,12 +91,6 @@ int main() {
 
 
 
-    Hadiah h;
-    FILE *Hadiah = fopen("thadiah.txt", "w") ;
-    printf("Input hadiah yang diinginkan : ");
-    scanf("%d %d %c %d", &h.x, &h.y, &h.nama, &h.skor);
-    fprintf(Hadiah, "###");
-    fclose(Hadiah); 
 
 
     return 0;
