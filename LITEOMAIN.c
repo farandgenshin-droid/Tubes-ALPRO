@@ -84,6 +84,7 @@ int main() {
         while (g.x <= 0 || g.y <= 0)
         {
            printf("ga bisa 0 dan mines");
+            return 0;
         }
         
         fprintf(gerak, "%d %d\n", g.x, g.y);
