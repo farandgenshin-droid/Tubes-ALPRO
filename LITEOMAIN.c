@@ -37,6 +37,7 @@ int x,y;
 Gerak g;
 Hadiah h;
 char player = '0'; 
+int skor = 0;
 
 
 /* PROGRAM UTAMA */
@@ -165,9 +166,9 @@ map[g.y][g.x] = player;
             printf("%c ", map[a][b]);
     }
     printf("\n");
-}}
-
-        else if(menu == 4) {
+}
+    printf("\nSkor O : %d\n", skor);    
+   }   else if(menu == 4) {
             printf("\nTerima kasih telah bermain!\n");
             break;
         }
