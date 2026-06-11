@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 
-/* ===================== TIPE DATA ===================== */
+/* TIPE DATA */
 
 typedef struct {
     int x;
@@ -17,7 +17,7 @@ typedef struct {
     int y;
 } Gerak;
 
-/* ===================== MESIN WAKTU ===================== */
+/* Kode waktu dari Pak Panji */
 
 void tahan(float x) {
     time_t start;
@@ -28,20 +28,27 @@ void tahan(float x) {
     while (difftime(current, start) < x);
 }
 
-/* ===================== VARIABEL GLOBAL ===================== */
+/* VARIABEL GLOBAL */
+
 
 int panjang, lebar;
-int menu; 
+int menu;
+int x,y;
+Gerak g;
+Hadiah h;
+char player = '0'; 
 
-/* ===================== PROGRAM UTAMA ===================== */
+
+/* PROGRAM UTAMA */
 
 int main() {
+
     printf("Selamat Datang di Program Lite-O\n");
     printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
     scanf("%d %d", &panjang, &lebar);
- 
+     char map[panjang][lebar];
+
  while(1) {
-        printf("");
         printf("Menu:\n");
         printf("1.Tambah hadiah\n");
         printf("2.Tambah gerak\n");
@@ -52,7 +59,6 @@ int main() {
         scanf(" %d", &menu);
 
         if(menu == 1) {
-             Hadiah h;
              int hadiah, i;
             FILE *TulisHadiah = fopen("thadiah.txt", "w") ;
             printf("Jumlah hadiah : ");
@@ -66,7 +72,6 @@ int main() {
             fclose(TulisHadiah);     
         }
         else if(menu == 2) {
-        Gerak g;
        int n, i;
     FILE *gerak = fopen("tgerak.txt", "w");
     printf("Jumlah gerakan : ");
@@ -74,18 +79,47 @@ int main() {
     for(i = 0; i < n; i++)
     { 
         printf("Gerakan ke-%d \n", i + 1);
-        printf("x : ");
-        scanf("%d", &g.x);
-        printf("y : ");
-        scanf("%d", &g.y);
+        printf("x dan y: ");
+        scanf("%d %d", &g.x, &g.y);
+        while (g.x <= 0 || g.y <= 0)
+        {
+           printf("ga bisa 0 dan mines");
+            return 0;
+        }
+        
         fprintf(gerak, "%d %d\n", g.x, g.y);
     }
     fprintf (gerak,"###");
     fclose(gerak);
 }
-        else if(menu == 3) {
-            // Memanggil fungsi simulasi  gameplay
+        else if(menu == 3){
+        int a, b;
+        /* set up map */
+        for (a = 0; a < panjang; a++) {
+         for (b = 0; b < lebar; b++) {
+            if (a == 0 || a == panjang - 1)
+        {
+            map[a][b] = '-';
         }
+        else if (b == 0 || b == lebar - 1)
+        {
+            map[a][b] = '|';
+        }
+        else
+        {
+            map[a][b] = ' ';
+        }
+    }
+}
+map[g.y][g.x] = player;
+
+    for (a = 0; a < panjang; a++) {
+        for (b = 0; b < lebar; b++) {
+            printf("%c ", map[a][b]);
+    }
+    printf("\n");
+}}
+
         else if(menu == 4) {
             printf("\nTerima kasih telah bermain!\n");
             break;
