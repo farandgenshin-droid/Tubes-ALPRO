@@ -37,6 +37,7 @@ int x,y;
 Gerak g;
 Hadiah h;
 char player = '0'; 
+int skor = 0;
 
 
 /* PROGRAM UTAMA */
@@ -69,29 +70,76 @@ int main() {
             fprintf(TulisHadiah, "%d %d %s %d\n", h.x, h.y, h.nama, h.skor);
         }
             fprintf(TulisHadiah, "###");
-            fclose(TulisHadiah);     
+            fclose(TulisHadiah); 
+            
+            /* TAMBAHAN SORTING */
+            Hadiah dataHadiah[100];
+            Hadiah temp;
+            int j;
+            int jumlahHadiah = 0;
+
+            TulisHadiah = fopen("thadiah.txt", "r");
+
+            while(fscanf(TulisHadiah,
+                 "%d %d %s %d",
+                 &dataHadiah[jumlahHadiah].x,
+                 &dataHadiah[jumlahHadiah].y,
+                 dataHadiah[jumlahHadiah].nama,
+                 &dataHadiah[jumlahHadiah].skor) == 4)
+    {
+            jumlahHadiah++;
+    }
+    fclose(TulisHadiah);
+
+    for(i = 0; i < jumlahHadiah - 1; i++)
+    {
+        for(j = i + 1; j < jumlahHadiah; j++)
+        {
+            if(dataHadiah[i].y > dataHadiah[j].y ||
+              (dataHadiah[i].y == dataHadiah[j].y &&
+               dataHadiah[i].x > dataHadiah[j].x))
+            {
+               temp = dataHadiah[i];
+               dataHadiah[i] = dataHadiah[j];
+               dataHadiah[j] = temp;
+            }
+        }
+    }
+    TulisHadiah = fopen("thadiah.txt", "w");
+
+    for(i = 0; i < jumlahHadiah; i++)
+    {
+        fprintf(TulisHadiah,
+                "%d %d %s %d\n",
+                dataHadiah[i].x,
+                dataHadiah[i].y,
+                dataHadiah[i].nama,
+                dataHadiah[i].skor);
+    }
+        fprintf(TulisHadiah, "###");
+        fclose(TulisHadiah);
         }
         else if(menu == 2) {
-       int n, i;
-    FILE *gerak = fopen("tgerak.txt", "w");
-    printf("Jumlah gerakan : ");
-    scanf("%d", &n);
-    for(i = 0; i < n; i++)
-    { 
-        printf("Gerakan ke-%d \n", i + 1);
-        printf("x dan y: ");
-        scanf("%d %d", &g.x, &g.y);
-        while (g.x <= 0 || g.y <= 0)
+            int n, i;
+            FILE *gerak = fopen("tgerak.txt", "w");
+            printf("Jumlah gerakan : ");
+            scanf("%d", &n);
+            for(i = 0; i < n; i++)
+        { 
+            printf("Gerakan ke-%d \n", i + 1);
+            printf("x dan y: ");
+            scanf("%d %d", &g.x, &g.y);
+            while (g.x <= 0 || g.y <= 0)
         {
            printf("ga bisa 0 dan mines");
-            return 0;
+        return 0;
         }
         
         fprintf(gerak, "%d %d\n", g.x, g.y);
     }
     fprintf (gerak,"###");
     fclose(gerak);
-}
+    }
         else if(menu == 3){
         int a, b;
         /* set up map */
@@ -118,9 +166,9 @@ map[g.y][g.x] = player;
             printf("%c ", map[a][b]);
     }
     printf("\n");
-}}
-
-        else if(menu == 4) {
+}
+    printf("\nSkor O : %d\n", skor);    
+   }   else if(menu == 4) {
             printf("\nTerima kasih telah bermain!\n");
             break;
         }
