@@ -47,7 +47,14 @@ int main() {
     printf("Selamat Datang di Program Lite-O\n");
     printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
     scanf("%d %d", &panjang, &lebar);
-     char map[panjang][lebar];
+    if (panjang == 20 && lebar == 50) {
+        printf("Papan catur Lite-O berukuran 20x50 siap dibuat.\n");
+    } else {
+        panjang = 20;
+        lebar = 50;
+        printf("Ukuran otomatis disesuaikan menjadi 20x50.\n");
+    }
+     char map[panjang+1][lebar+1];
 
  while(1) {
         printf("Menu:\n");
