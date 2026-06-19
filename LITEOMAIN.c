@@ -123,6 +123,9 @@ int main() {
     printf("Selamat Datang di Program Lite-O\n");
     printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
     scanf("%d %d", &panjang, &lebar);
+     char map[panjang+3][lebar+3];
+
+ while(1) {
         printf("Menu:\n");
         printf("1.Tambah hadiah\n");
         printf("2.Tambah gerak\n");
