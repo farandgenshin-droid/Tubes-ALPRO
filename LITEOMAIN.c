@@ -128,13 +128,13 @@ int main() {
     printf("Selamat Datang di Program Lite-O\n");
     printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
     scanf("%d %d", &panjang, &lebar);
-     char map[panjang+1][lebar+1];
+     char map[panjang+3][lebar+3];
 
  while(1) {
         printf("Menu:\n");
         printf("1.Tambah hadiah\n");
         printf("2.Tambah gerak\n");
-        printf("3.Simulasi Lite-O\n");
+        printf("3.Simulasi Lite-O\n");  
         printf("4.Keluar\n");
         printf("Masukan Menu (1-4) : ");
 
@@ -178,9 +178,11 @@ int main() {
             printf("Gerakan ke-%d \n", i + 1);
             printf("x dan y: ");
             scanf("%d %d", &g.x, &g.y);
-            while (g.x <= 0 || g.y <= 0)
+            g.x + 1 ;
+            g.y + 1 ;
+            while (g.x < 0 || g.y < 0)
         {
-           printf("ga bisa 0 dan mines");
+           printf("ga bisa mines");
         break;
         }
         
@@ -192,42 +194,49 @@ int main() {
         else if(menu == 3){
         int a, b;
         /* set up map */
-        for (a = 0; a < panjang; a++) {
-         for (b = 0; b < lebar; b++) {
-            if (a == 0 || a == panjang - 1)
-        {
-            map[a][b] = '-';
-        }
-        else if (b == 0 || b == lebar - 1)
+        for (a = 0; a < panjang+3; a++) {
+         for (b = 0; b < lebar+3; b++) {
+        if (b == 0 || b == lebar+2)
         {
             map[a][b] = '|';
+        }
+        else if (a == 0 || a == panjang+2)
+        {
+            map[a][b] = '-';
         }
         else
         {
             map[a][b] = ' ';
         }
     }
-}
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 FILE *Thadiah = fopen("thadiah.txt", "r");
 while (fscanf(Thadiah, "%d %d %s %d", &h.x, &h.y, h.nama, &h.skor) == 4) {
-    map[h.y][h.x] = bentukhadiah;
-}
+if (! (h.y <= 0 || h.y >= lebar+1 || h.x <= 0 || h.x >= panjang+1)){
+map[h.y+1][h.x+1] = bentukhadiah;
+} else {
+    continue;
+}}
 fclose(Thadiah);
-
 
 FILE *gerak = fopen("tgerak.txt", "r");
 while (fscanf(gerak,"%d %d", &g.x, &g.y) == 2 ){
-map[g.y][g.x] = player;
-}fclose(gerak);
-
-
-
-    for (a = 0; a < panjang; a++) {
-        for (b = 0; b < lebar; b++) {
+if (! (g.y < 0 || g.y >= lebar+1 || g.x < 0 || g.x < 0)){
+map[g.y+1][g.x+1] = player;
+} else {
+    continue;
+}}
+fclose(gerak);
+    system("cls");
+    tahan(1);
+    for (a = 0; a < panjang+3; a++) {
+        for (b = 0; b < lebar+3; b++) {
             printf("%c ", map[a][b]);
     }
     printf("\n");
+
+     tahan(1);
 }
     printf("\nSkor O : %d\n", skor);    
    }  
@@ -239,10 +248,5 @@ map[g.y][g.x] = player;
             printf("\nPilihan tidak valid! Silakan masukkan angka 1-4.\n");
         }
     }
-
-
-
-
-
     return 0;
 }
