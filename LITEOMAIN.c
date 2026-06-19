@@ -3,7 +3,6 @@
 #include <string.h>
 #include <time.h>
 /* TIPE DATA */
-
 typedef struct {
     int x;
     int y;
@@ -32,21 +31,18 @@ void tahan(float x) {
 
 int panjang, lebar;
 int hadiah;
-int i,j;
+int i = 0;
+int j = 0;
 int tambahataurewrite;
 int menu;
 int x,y;
-Gerak g;
-Hadiah h;
+Gerak g[10000];
+Hadiah h[10000];
 char player = '0'; 
 int skor = 0;
-char move; 
 char bentukhadiah = '*';
-char map;
 int a,b;
-Hadiah dataHadiah[100];
 int jumlahHadiah;
-
 
 void writehadiah() {
       FILE *Thadiah= fopen("thadiah.txt", "w") ;
@@ -55,8 +51,8 @@ void writehadiah() {
             for(i = 0; i < hadiah; i++){
             printf("Input hadiah ke-%d:\n", i + 1);
              printf("x, y, nama, skor1 : ");
-             scanf("%d %d %s %d", &h.x, &h.y, h.nama, &h.skor);
-             fprintf(Thadiah, "%d %d %s %d\n", h.x, h.y, h.nama, h.skor);
+             scanf("%d %d %s %d", &h[i].x, &h[i].y, h[i].nama, &h[i].skor);
+             fprintf(Thadiah, "%d %d %s %d\n", h[i].x, h[i].y, h[i].nama, h[i].skor);
         }
             fprintf(Thadiah, "###");
             fclose(Thadiah); 
@@ -66,14 +62,13 @@ void readhadiah () {
     Hadiah temp;
     jumlahHadiah = 0;
     FILE *Thadiah = fopen("thadiah.txt", "r");
-    
     if (Thadiah == NULL)
     {
         printf("Gagal membaca file thadiah.txt\n");
     }
     else
     {
-        while (fscanf(Thadiah, "%d %d %s %d", &dataHadiah[jumlahHadiah].x, &dataHadiah[jumlahHadiah].y, dataHadiah[jumlahHadiah].nama, &dataHadiah[jumlahHadiah].skor) == 4)
+        while (fscanf(Thadiah, "%d %d %s %d", &h[jumlahHadiah].x, &h[jumlahHadiah].y, h[jumlahHadiah].nama, &h[jumlahHadiah].skor) == 4)
         {
             jumlahHadiah++;
         }
@@ -81,11 +76,11 @@ void readhadiah () {
         {
             for (j = 0; j < jumlahHadiah - 1 - i; j++)
             {
-                if (dataHadiah[j].y > dataHadiah[j + 1].y)
+                if (h[j].y > h[j + 1].y)
                 {
-                    temp = dataHadiah[j];
-                    dataHadiah[j] = dataHadiah[j + 1];
-                    dataHadiah[j + 1] = temp;
+                    temp = h[j];
+                    h[j] = h[j + 1];
+                    h[j + 1] = temp;
                 }
             }
         }
@@ -95,8 +90,8 @@ void readhadiah () {
 
         for (i = 0; i < jumlahHadiah; i++)
         {
-            fprintf(Thadiah, "%d %d %s %d\n", dataHadiah[i].x, dataHadiah[i].y, dataHadiah[i].nama, dataHadiah[i].skor);
-            printf(" Posisi (X:%d, Y:%d) |  nama: %s  | Skor: %d\n", dataHadiah[i].x, dataHadiah[i].y, dataHadiah[i].nama, dataHadiah[i].skor);
+            fprintf(Thadiah, "%d %d %s %d\n", h[i].x, h[i].y, h[i].nama, h[i].skor);
+            printf(" Posisi (X:%d, Y:%d) |  nama: %s  | Skor: %d\n", h[i].x, h[i].y, h[i].nama, h[i].skor);
         }
         
         fprintf(Thadiah, "###"); 
@@ -115,7 +110,7 @@ void appendhadiah()
     {
         printf("Input hadiah ke-%d:\n", i + 1);
         printf("x, y, nama, skor : ");
-        scanf("%d %d %s %d", &dataHadiah[jumlahHadiah].x, &dataHadiah[jumlahHadiah].y, dataHadiah[jumlahHadiah].nama, &dataHadiah[jumlahHadiah].skor);
+        scanf("%d %d %s %d", &h[jumlahHadiah].x, &h[jumlahHadiah].y, h[jumlahHadiah].nama, &h[jumlahHadiah].skor);
         jumlahHadiah++; 
     }
     fclose(Thadiah);
@@ -128,13 +123,13 @@ int main() {
     printf("Selamat Datang di Program Lite-O\n");
     printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
     scanf("%d %d", &panjang, &lebar);
-     char map[panjang+1][lebar+1];
+     char map[panjang+3][lebar+3];
 
  while(1) {
         printf("Menu:\n");
         printf("1.Tambah hadiah\n");
         printf("2.Tambah gerak\n");
-        printf("3.Simulasi Lite-O\n");
+        printf("3.Simulasi Lite-O\n");  
         printf("4.Keluar\n");
         printf("Masukan Menu (1-4) : ");
 
@@ -150,7 +145,7 @@ int main() {
                 FILE *Thadiah= fopen("thadiah.txt", "w");
 
                 for(i = 0; i < jumlahHadiah; i++) {
-                    fprintf(Thadiah, "%d %d %s %d\n", dataHadiah[i].x, dataHadiah[i].y, dataHadiah[i].nama, dataHadiah[i].skor);
+                    fprintf(Thadiah, "%d %d %s %d\n", h[i].x, h[i].y, h[i].nama, h[i].skor);
                 }
                 fprintf(Thadiah, "###");
                 fclose(Thadiah);
@@ -161,7 +156,7 @@ int main() {
             FILE *Thadiah= fopen("thadiah.txt", "w");
 
             for(i = 0; i < jumlahHadiah; i++) {
-                 fprintf(Thadiah, "%d %d %s %d\n", dataHadiah[i].x, dataHadiah[i].y, dataHadiah[i].nama, dataHadiah[i].skor);
+                 fprintf(Thadiah, "%d %d %s %d\n", h[i].x, h[i].y, h[i].nama, h[i].skor);
             }
             fprintf(Thadiah, "###");
             fclose(Thadiah);
@@ -169,38 +164,42 @@ int main() {
         } 
         
         else if(menu == 2) {
-            int n, i;
+            int n;
             FILE *gerak = fopen("tgerak.txt", "w");
             printf("Jumlah gerakan : ");
             scanf("%d", &n);
-            for(i = 0; i < n; i++)
+            for(j = 0; j < n; j++)
         { 
-            printf("Gerakan ke-%d \n", i + 1);
+            printf("Gerakan ke-%d \n", j + 1);
             printf("x dan y: ");
-            scanf("%d %d", &g.x, &g.y);
-            while (g.x <= 0 || g.y <= 0)
+            scanf("%d %d", &g[j].x, &g[j].y);
+            while (g[j].x < 0 || g[j].y < 0)
         {
-           printf("ga bisa 0 dan mines");
+           printf("ga bisa mines");
         break;
         }
         
-        fprintf(gerak, "%d %d\n", g.x, g.y);
+        fprintf(gerak, "%d %d\n", g[j].x, g[j].y);
     }
     fprintf (gerak,"###");
     fclose(gerak);
     }
         else if(menu == 3){
-        int a, b;
-        /* set up map */
-        for (a = 0; a < panjang; a++) {
-         for (b = 0; b < lebar; b++) {
-            if (a == 0 || a == panjang - 1)
-        {
-            map[a][b] = '-';
-        }
-        else if (b == 0 || b == lebar - 1)
+j = 0;
+FILE *gerak = fopen("tgerak.txt", "r");
+if (gerak == NULL){
+    break;}
+while (fscanf(gerak,"%d %d", &g[j].x, &g[j].y) == 2 ){
+    system ("cls");
+        for (a = 0; a < panjang+3; a++) {
+         for (b = 0; b < lebar+3; b++) {
+        if (b == 0 || b == lebar+2)
         {
             map[a][b] = '|';
+        }
+        else if (a == 0 || a == panjang+2)
+        {
+            map[a][b] = '-';
         }
         else
         {
@@ -210,27 +209,34 @@ int main() {
 }
 
 FILE *Thadiah = fopen("thadiah.txt", "r");
-while (fscanf(Thadiah, "%d %d %s %d", &h.x, &h.y, h.nama, &h.skor) == 4) {
-    map[h.y][h.x] = bentukhadiah;
-}
-fclose(Thadiah);
+i = 0;
+while (fscanf(Thadiah, "%d %d %s %d", &h[i].x, &h[i].y, h[i].nama, &h[i].skor) == 4) {
+if (h[i].y >= 0 && h[i].y < lebar+1 && h[i].x >= 0 && h[i].x < panjang+1){
+map[h[i].y + 1][h[i].x + 1] = bentukhadiah;
+}}fclose(Thadiah);
 
+if (g[j].y >= 0 && g[j].y < lebar+1 && g[j].x >= 0 && g[j].x < panjang+1){
+map[g[j].y + 1][g[j].x + 1] = player;
+}  
 
-FILE *gerak = fopen("tgerak.txt", "r");
-while (fscanf(gerak,"%d %d", &g.x, &g.y) == 2 ){
-map[g.y][g.x] = player;
-}fclose(gerak);
+        for (a = 0; a < panjang + 3; a++)
+        {
+            for (b = 0; b < lebar + 3; b++)
+            {
+                printf("%c ", map[a][b]);
+            }
+            printf("\n");
+        }
 
+        printf("\nPosisi O : (%d,%d)\n", g[j].x, g[j].y);
+        printf("Skor O : %d\n", skor);
 
-
-    for (a = 0; a < panjang; a++) {
-        for (b = 0; b < lebar; b++) {
-            printf("%c ", map[a][b]);
-    }
-    printf("\n");
-}
-    printf("\nSkor O : %d\n", skor);    
-   }  
+        tahan(1);
+    } 
+    fclose(gerak);
+    printf("\nSimulasi selesai!\n");
+    printf("Skor akhir : %d\n", skor);
+   } 
     else if(menu == 4) {
             printf("\nTerima kasih telah bermain!\n");
             break;
@@ -238,11 +244,6 @@ map[g.y][g.x] = player;
         else {
             printf("\nPilihan tidak valid! Silakan masukkan angka 1-4.\n");
         }
-    }
-
-
-
-
-
+    } 
     return 0;
 }
