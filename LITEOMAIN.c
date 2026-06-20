@@ -135,7 +135,7 @@ int main() {
 
         scanf(" %d", &menu);
 
-       if(menu == 1) { // ini gw izin jadiin void yak, sama izin sortinganya gw ubah ke bubble, jujur gw ga paham ma sortingan lu aul wkkwkw
+       if(menu == 1) { // ini gw izin jadiin void yak, sama izin sortinganya gw ubah ke bubble, jujur gw ga paham
             printf("Ketik 1 untuk tambah hadiah atau angka berapapun untuk rewrite hadiah: ");
             scanf("%d", &tambahataurewrite);
             
@@ -190,7 +190,7 @@ FILE *gerak = fopen("tgerak.txt", "r");
 if (gerak == NULL){
     break;}
 while (fscanf(gerak,"%d %d", &g[j].x, &g[j].y) == 2 ){
-    system ("cls");
+    system ("clear");
         for (a = 0; a < panjang+3; a++) {
          for (b = 0; b < lebar+3; b++) {
         if (b == 0 || b == lebar+2)
@@ -223,10 +223,21 @@ map[g[j].y + 1][g[j].x + 1] = player;
         {
             for (b = 0; b < lebar + 3; b++)
             {
+                if (map[a][b] == player) {
+                    printf("\033[95m%c \033[0m", map[a][b]); // player warna ungu
+                }
+                else if (map[a][b] == bentukhadiah) {
+                    printf("\033[96m%c \033[0m", map[a][b]); // hadiah warna cyan
+                }
+                else if (map[a][b] == '-' || map[a][b] == '|') {
+                    printf("\033[90m%c \033[0m", map[a][b]); // dinding warna abu-abu
+                }
+                else {
                 printf("%c ", map[a][b]);
             }
-            printf("\n");
         }
+            printf("\n");
+    }
 
         printf("\nPosisi O : (%d,%d)\n", g[j].x, g[j].y);
         printf("Skor O : %d\n", skor);
@@ -236,7 +247,10 @@ map[g[j].y + 1][g[j].x + 1] = player;
     fclose(gerak);
     printf("\nSimulasi selesai!\n");
     printf("Skor akhir : %d\n", skor);
-   } 
+   
+   tahan(3); // jeda agar user sempat melihat skor akhir
+   system("clear"); // bersihkan layar sebelum muncul menu utama lagi
+}
     else if(menu == 4) {
             printf("\nTerima kasih telah bermain!\n");
             break;
