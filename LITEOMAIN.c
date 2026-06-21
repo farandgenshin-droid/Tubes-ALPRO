@@ -43,6 +43,7 @@ int skor = 0;
 char bentukhadiah = '*';
 int a,b;
 int jumlahHadiah;
+int hadiahdimakan[10000];
 
 void writehadiah() {
       FILE *Thadiah= fopen("thadiah.txt", "w") ;
@@ -116,6 +117,20 @@ void appendhadiah()
     fclose(Thadiah);
 }
 
+//fungsi cek dan makan hadiah
+int cekdanmakanhadiah(int x, int y) {
+    int hadiahdimakancount = 0;
+    for (int k = 0; k < jumlahHadiah; k++) {
+        if (hadiahdimakan[k] == 0 && h[k].x == x && h[k].y == y) {
+            skor += h[k].skor;
+            hadiahdimakan[k] = 1;
+            hadiahdimakancount++;
+            printf("\n*** hadiah '%s' dimakan! +%d poin! ***\n", h[k].nama, h[k].skor);
+        }
+    }
+    return hadiahdimakancount;
+}
+
 /* PROGRAM UTAMA */
 
 int main() {
@@ -135,7 +150,7 @@ int main() {
 
         scanf(" %d", &menu);
 
-       if(menu == 1) { // ini gw izin jadiin void yak, sama izin sortinganya gw ubah ke bubble, jujur gw ga paham
+       if(menu == 1) { // ini gw izin jadiin void yak, sama izin sortinganya gw ubah ke bubble, jujur gw ga paham ma sortingan lu aul wkkwkw
             printf("Ketik 1 untuk tambah hadiah atau angka berapapun untuk rewrite hadiah: ");
             scanf("%d", &tambahataurewrite);
             
@@ -185,28 +200,69 @@ int main() {
     fclose(gerak);
     }
         else if(menu == 3){
+//reset skor dan hadiahdimakan
+skor = 0;
+for(int k = 0; k < 10000; k++){
+    hadiahdimakan[k] = 0;
+}
+
+//baca ulang data hadiah dari file
+readhadiah();
+
 j = 0;
 FILE *gerak = fopen("tgerak.txt", "r");
 if (gerak == NULL){
-    break;}
-while (fscanf(gerak,"%d %d", &g[j].x, &g[j].y) == 2 ){
-    system ("clear");
-        for (a = 0; a < panjang+3; a++) {
-         for (b = 0; b < lebar+3; b++) {
-        if (b == 0 || b == lebar+2)
-        {
-            map[a][b] = '|';
-        }
-        else if (a == 0 || a == panjang+2)
-        {
-            map[a][b] = '-';
-        }
-        else
-        {
-            map[a][b] = ' ';
-        }
-    }
+    printf("File tgerak.txt tidak ditemukan.\n");
+    break;
 }
+
+//baca semua gerakan
+int totalGerakan = 0;
+while (fscanf(gerak,"%d %d", &g[j].x, &g[j].y) == 2 ){
+    totalGerakan++;
+}
+fclose(gerak);
+
+//jika tidak ada gerakan, tampilkan papan awal
+if (totalGerakan == 0) {
+    printf("Tidak ada gerakan untuk disimulasikan.\n");
+    continue;
+}
+
+//simulasi setiap gerakan
+for (j = 0; j < totalGerakan; j++) {
+    system ("cls");
+        //inisialisasi peta
+        for (a = 0; a < panjang+3; a++) {
+            for (b = 0; b < lebar+3; b++) {
+                if (b == 0 || b == lebar+2) {
+                    map[a][b] = '|';
+                }
+                else if (a == 0 || a == panjang+2) {
+                    map[a][b] = '-';
+                }
+                else {
+                    map[a][b] = ' ';
+                }
+            }
+        }
+
+        //tampilkan hadiah yang belum dimakan
+        for(i = 0; i < jumlahHadiah; i++) {
+            if (hadiahdimakan[i] == 0) {
+                if (h[i].y >= 0 && h[i].y < lebar && h[i].x >= 0 && h[i].x < panjang){
+                    map[h[i].y + 1][h[i].x + 1] = bentukhadiah;
+                }
+            }
+        }
+
+        //cek apakah o berada di posisi hadiah sebelum menampikan o
+        cekdanmakanhadiah(g[j].x, g[j].y);
+
+        //tampikan posisi o
+        if (g[j].y >= 0 && g[j].y < lebar && g[j].x >= 0 && g[j].x < panjang){
+            map[g[j].y + 1][g[j].x + 1] = player;
+        }
 
 FILE *Thadiah = fopen("thadiah.txt", "r");
 i = 0;
@@ -223,34 +279,30 @@ map[g[j].y + 1][g[j].x + 1] = player;
         {
             for (b = 0; b < lebar + 3; b++)
             {
-                if (map[a][b] == player) {
-                    printf("\033[95m%c \033[0m", map[a][b]); // player warna ungu
-                }
-                else if (map[a][b] == bentukhadiah) {
-                    printf("\033[96m%c \033[0m", map[a][b]); // hadiah warna cyan
-                }
-                else if (map[a][b] == '-' || map[a][b] == '|') {
-                    printf("\033[90m%c \033[0m", map[a][b]); // dinding warna abu-abu
-                }
-                else {
                 printf("%c ", map[a][b]);
             }
-        }
             printf("\n");
-    }
+        }
 
         printf("\nPosisi O : (%d,%d)\n", g[j].x, g[j].y);
         printf("Skor O : %d\n", skor);
+        printf("Gerakan ke-%d dari %d\n", j + 1, totalGerakan);
 
         tahan(1);
     } 
     fclose(gerak);
+
     printf("\nSimulasi selesai!\n");
     printf("Skor akhir : %d\n", skor);
-   
-   tahan(3); // jeda agar user sempat melihat skor akhir
-   system("clear"); // bersihkan layar sebelum muncul menu utama lagi
-}
+    printf("Total Hadiah yang dimakan : ");
+    int totalHadiahDimakan = 0;
+    for (int k = 0; k < jumlahHadiah; k++) {
+        if (hadiahdimakan[k] == 1) {
+            totalHadiahDimakan++;
+        }
+    }
+    printf("%d dari %d hadiah\n\n", totalHadiahDimakan, jumlahHadiah);
+   } 
     else if(menu == 4) {
             printf("\nTerima kasih telah bermain!\n");
             break;
