@@ -231,65 +231,49 @@ if (totalGerakan == 0) {
 //simulasi setiap gerakan
 for (j = 0; j < totalGerakan; j++) {
     system ("cls");
-        //inisialisasi peta
-        for (a = 0; a < panjang+3; a++) {
-            for (b = 0; b < lebar+3; b++) {
-                if (b == 0 || b == lebar+2) {
-                    map[a][b] = '|';
-                }
-                else if (a == 0 || a == panjang+2) {
-                    map[a][b] = '-';
-                }
-                else {
-                    map[a][b] = ' ';
+    
+    // 1. Cek apakah o berada di posisi hadiah sebelum menampilkan papan
+    cekdanmakanhadiah(g[j].x, g[j].y);
+
+    // 2. MENGGAMBAR PAPAN LANGSUNG (Direct Rendering)
+    char wadahhadiah[50];
+    for (a = 0; a < panjang + 3; a++) {
+        for (b = 0; b < lebar + 3; b++) {
+            
+            int is_hadiah = 0;
+            int index_hadiah = -1;
+
+            // Cek hadiah yang BELUM dimakan di koordinat ini
+            for(int k = 0; k < jumlahHadiah; k++) {
+                if (hadiahdimakan[k] == 0 && h[k].x + 1 == b && h[k].y + 1 == a) {
+                    is_hadiah = 1;
+                    index_hadiah = k;
+                    break;
                 }
             }
-        }
 
-        //tampilkan hadiah yang belum dimakan
-        for(i = 0; i < jumlahHadiah; i++) {
-            if (hadiahdimakan[i] == 0) {
-                if (h[i].y >= 0 && h[i].y < lebar && h[i].x >= 0 && h[i].x < panjang){
-                    map[h[i].y + 1][h[i].x + 1] = bentukhadiah;
-                }
+            // PRIORITAS PENCETAKAN (Semua spasi ekstra dihilangkan agar presisi)
+            if (b == g[j].x + 1 && a == g[j].y + 1) {
+                printf("%c", player); // Cetak 'O' (Tanpa spasi)
+            }
+            else if (is_hadiah == 1) {
+                sprintf(wadahhadiah, "%s%d", h[index_hadiah].nama, h[index_hadiah].skor);
+                printf("%s", wadahhadiah);
+                
+                
+                b += strlen(wadahhadiah) - 1; 
+            }
+            else if (b == 0 || b == lebar + 2) {
+                printf("|"); 
+            }
+            else if (a == 0 || a == panjang + 2) {
+                printf("-"); 
+            }
+            else {
+                printf(" "); 
             }
         }
-
-        //cek apakah o berada di posisi hadiah sebelum menampikan o
-        cekdanmakanhadiah(g[j].x, g[j].y);
-
-        //tampikan posisi o
-        if (g[j].y >= 0 && g[j].y < lebar && g[j].x >= 0 && g[j].x < panjang){
-            map[g[j].y + 1][g[j].x + 1] = player;
-        }
-
-FILE *Thadiah = fopen("thadiah.txt", "r");
-i = 0;
-while (fscanf(Thadiah, "%d %d %s %d", &h[i].x, &h[i].y, h[i].nama, &h[i].skor) == 4) {
-if (h[i].y >= 0 && h[i].y < lebar+1 && h[i].x >= 0 && h[i].x < panjang+1){
-map[h[i].y + 1][h[i].x + 1] = bentukhadiah;
-}}fclose(Thadiah);
-
-if (g[j].y >= 0 && g[j].y < lebar+1 && g[j].x >= 0 && g[j].x < panjang+1){
-map[g[j].y + 1][g[j].x + 1] = player;
-}  
-
-        for (a = 0; a < panjang + 3; a++)
-        {
-            for (b = 0; b < lebar + 3; b++)
-            {if (map[a][b] == player) {
-                    printf("\033[95m%c \033[0m", map[a][b]); // player warna ungu
-                }
-                else if (map[a][b] == bentukhadiah) {
-                    printf("\033[96m%c \033[0m", map[a][b]); // hadiah warna cyan
-                }
-                else if (map[a][b] == '-' || map[a][b] == '|') {
-                    printf("\033[90m%c \033[0m", map[a][b]); // dinding warna abu-abu
-                }
-                else {
-                printf("%c ", map[a][b]);
-            }
-            } printf("\n");
+        printf("\n");
     }
         printf("\nPosisi O : (%d,%d)\n", g[j].x, g[j].y);
         printf("Skor O : %d\n", skor);
