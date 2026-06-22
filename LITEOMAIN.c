@@ -134,14 +134,13 @@ int cekdanmakanhadiah(int x, int y) {
 /* PROGRAM UTAMA */
 
 int main() {
-
-    printf("Selamat Datang di Program Lite-O\n");
-    printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
+    printf("\033[0;32mSelamat Datang di Program Lite-O\n\033[0m");
+    printf("\033[0;32mMasukan Panjang dan Lebar (pisahkan dengan spasi) :\033[0;32m");
     scanf("%d %d", &panjang, &lebar);
      char map[panjang+3][lebar+3];
 
  while(1) {
-        printf("Menu:\n");
+        printf("\033[0;36mMenu:\n");
         printf("1.Tambah hadiah\n");
         printf("2.Tambah gerak\n");
         printf("3.Simulasi Lite-O\n");  
@@ -278,12 +277,20 @@ map[g[j].y + 1][g[j].x + 1] = player;
         for (a = 0; a < panjang + 3; a++)
         {
             for (b = 0; b < lebar + 3; b++)
-            {
+            {if (map[a][b] == player) {
+                    printf("\033[95m%c \033[0m", map[a][b]); // player warna ungu
+                }
+                else if (map[a][b] == bentukhadiah) {
+                    printf("\033[96m%c \033[0m", map[a][b]); // hadiah warna cyan
+                }
+                else if (map[a][b] == '-' || map[a][b] == '|') {
+                    printf("\033[90m%c \033[0m", map[a][b]); // dinding warna abu-abu
+                }
+                else {
                 printf("%c ", map[a][b]);
             }
-            printf("\n");
-        }
-
+            } printf("\n");
+    }
         printf("\nPosisi O : (%d,%d)\n", g[j].x, g[j].y);
         printf("Skor O : %d\n", skor);
         printf("Gerakan ke-%d dari %d\n", j + 1, totalGerakan);
@@ -291,7 +298,6 @@ map[g[j].y + 1][g[j].x + 1] = player;
         tahan(1);
     } 
     fclose(gerak);
-
     printf("\nSimulasi selesai!\n");
     printf("Skor akhir : %d\n", skor);
     printf("Total Hadiah yang dimakan : ");
