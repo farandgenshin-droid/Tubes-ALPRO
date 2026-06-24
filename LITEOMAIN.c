@@ -117,11 +117,20 @@ void appendhadiah()
     }
     fclose(Thadiah);
 }
-
+void tampilanAwal() {
+    printf("\033[93m");
+    printf("#      #####  #####  #####         #####\n");
+    printf("#        #      #    #             #   #\n");
+    printf("#        #      #    #####  #####  #   #\n");
+    printf("#        #      #    #             #   #\n");
+    printf("#####  #####    #    #####         #####\n");
+    printf("\033[0m");
+    printf("\033[92mTITLE LITE-O\033[0m\n\n");
+}
 /* PROGRAM UTAMA */
 
 int main() {
-
+    tampilanAwal();   // panggil di sini
     printf("Selamat Datang di Program Lite-O\n");
     printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
     scanf("%d %d", &panjang, &lebar);
@@ -292,7 +301,6 @@ map[g[j].y + 1][g[j].x + 1] = player;
     else if(menu == 4) {
             printf("\nTerima kasih telah bermain!\n");
             system("exit");
-            exit(0);
         }
         else {
             printf("\nPilihan tidak valid! Silakan masukkan angka 1-4.\n");
