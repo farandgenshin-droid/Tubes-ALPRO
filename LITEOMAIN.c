@@ -151,7 +151,7 @@ int main() {
           scanf(" %c", &letter);
           if ( letter == 'Y' || letter == 'y'){
              for (i = 0; i < jumlahHadiah; i++)
-        { printf(" Posisi (X:%d, Y:%d) |  nama: %s  | Skor: %d\n", h[i].x, h[i].y, h[i].nama, h[i].skor);
+        { printf("| Posisi (X:%3d, Y:%3d) | Nama: %-15s | Skor: %3d | \n", h[i].x, h[i].y, h[i].nama, h[i].skor);
         }
             printf("Ketik 1 untuk tambah hadiah atau angka berapapun untuk rewrite hadiah: ");
             scanf("%d", &tambahataurewrite);
