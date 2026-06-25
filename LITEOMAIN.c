@@ -93,7 +93,7 @@ void readhadiah () {
         for (i = 0; i < jumlahHadiah; i++)
         {
             fprintf(Thadiah, "%d %d %s %d\n", h[i].x, h[i].y, h[i].nama, h[i].skor);
-            printf(" Posisi (X:%d, Y:%d) |  nama: %s  | Skor: %d\n", h[i].x, h[i].y, h[i].nama, h[i].skor);
+            printf("| Posisi (X:%3d, Y:%3d) | Nama: %-15s | Skor: %3d | \n", h[i].x, h[i].y, h[i].nama, h[i].skor);
         }
         
         fprintf(Thadiah, "###"); 
@@ -150,9 +150,7 @@ int main() {
           printf("\n Y/N: ");
           scanf(" %c", &letter);
           if ( letter == 'Y' || letter == 'y'){
-             for (i = 0; i < jumlahHadiah; i++)
-        { printf("| Posisi (X:%3d, Y:%3d) | Nama: %-15s | Skor: %3d | \n", h[i].x, h[i].y, h[i].nama, h[i].skor);
-        }
+            readhadiah();
             printf("Ketik 1 untuk tambah hadiah atau angka berapapun untuk rewrite hadiah: ");
             scanf("%d", &tambahataurewrite);
             
@@ -179,7 +177,7 @@ int main() {
             fprintf(Thadiah, "###");
             fclose(Thadiah);
             }
-        } else { return 0;
+        } else { continue;
         }}
 
         
@@ -206,7 +204,7 @@ int main() {
     }
     fprintf (gerak,"###");
     fclose(gerak);
-     } else { return 0;
+     } else { continue;
     }}
         else if(menu == 3){
 j = 0;
@@ -214,7 +212,6 @@ FILE *gerak = fopen("tgerak.txt", "r");
 if (gerak == NULL){
     break;}
 
-/* baca hadiah sekali di awal simulasi, semua dianggap belum dimakan */
 i = 0;
 FILE *ThadiahAwal = fopen("thadiah.txt", "r");
 if (ThadiahAwal != NULL) {
@@ -296,7 +293,6 @@ map[g[j].y + 1][g[j].x + 1] = player;
         tahan(1);
     } 
     fclose(gerak);
-    /* papan terakhir tetap tampil di layar, langsung lanjut ke menu di bawahnya */
 }
     else if(menu == 4) {
             printf("\nTerima kasih telah bermain!\n");
