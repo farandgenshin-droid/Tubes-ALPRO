@@ -1,6 +1,6 @@
 #include <stdio.h>   /* Library untuk fungsi input/output dasar, seperti printf dan scanf */
 #include <stdlib.h>  /* Library untuk fungsi umum, seperti exit() dan alokasi memori */
-#include <string.h>. /* Library untuk fungsi-fungsi yang berhubungan dengan teks/string */
+#include <string.h> /* Library untuk fungsi-fungsi yang berhubungan dengan teks/string */
 #include <time.h>    /* Library untuk fungsi yang berhubungan dengan waktu, dipakai di fungsi tahan() */
 
 /* Struktur data untuk menyimpan informasi satu hadiah di dalam permainan */
@@ -43,9 +43,10 @@ Hadiah h[10000];       /* array untuk menyimpan seluruh data hadiah, maksimal 10
 char player = 'O';     /* karakter yang melambangkan posisi pemain di papan permainan, defaultnya 'O' */
 int skor = 0;          /* total skor yang sudah didapatkan pemain selama permainan berlangsung */
 char bentukhadiah = '*';/* karakter yang melambangkan bentuk hadiah di papan permainan */
-int a,b,k;             /* variabel a, b, k, dipakai sebagai variabel perulangan (looping) di berbagai fungsi */
-int jumlahHadiah;      /* jumlah hadiah yang sedang tersimpan dan aktif di dalam program */
+int a,b,k, n;             /* variabel a, b, k, dipakai sebagai variabel perulangan (looping) di berbagai fungsi */
+int jumlahHadiah, jumlahgerak;      /* jumlah hadiah dan gerak yang sedang tersimpan dan aktif di dalam program */
 char letter;           /* menyimpan jawaban Y/N dari pengguna saat ditanya konfirmasi */
+int tulisan;
 
 void writehadiah() {
       FILE *Thadiah= fopen("thadiah.txt", "w") ;
@@ -114,6 +115,7 @@ void appendhadiah()
         printf("Input hadiah ke-%d:\n", i + 1);
         printf("x, y, nama, skor : ");
         scanf("%d %d %s %d", &h[jumlahHadiah].x, &h[jumlahHadiah].y, h[jumlahHadiah].nama, &h[jumlahHadiah].skor);
+        fprintf(Thadiah,"%d %d %s %d\n", h[jumlahHadiah].x, h[jumlahHadiah].y, h[jumlahHadiah].nama, h[jumlahHadiah].skor);
         jumlahHadiah++; 
     }
     fclose(Thadiah);
@@ -130,8 +132,72 @@ void tampilanAwal() {
     printf("\033[0m");  /* mengembalikan warna teks ke warna normal/default */
     printf("\033[92mTITLE LITE-O\033[0m\n\n"); /* menampilkan tulisan "TITLE LITE-O" dengan warna hijau */
 }
-/* PROGRAM UTAMA */
 
+
+void writegerak() {
+
+    FILE *gerak = fopen("tgerak.txt", "w");
+    printf("Jumlah gerakan : ");
+    scanf("%d", &n);
+
+    for(j = 0; j < n; j++) {
+        printf("Gerakan ke-%d\n", j + 1);
+        printf("x dan y : ");
+        scanf("%d %d", &g[j].x, &g[j].y);
+        while (g[j].x < 0 || g[j].y < 0) {
+            printf("ga bisa mines\n");
+            printf("x dan y : ");
+            scanf("%d %d", &g[j].x, &g[j].y);
+        }
+        fprintf(gerak, "%d %d\n", g[j].x, g[j].y);
+    }
+
+    fprintf(gerak, "###");
+    fclose(gerak);
+}
+
+void appendgerak () {
+
+    FILE *gerak = fopen("tgerak.txt", "a");
+
+    printf("Jumlah gerakan tambahan : ");
+    scanf("%d", &n);
+
+    for(j = 0; j < n; j++) {
+
+        printf("Input gerakan ke-%d:\n", j + 1);
+        printf("x dan y : ");
+        scanf("%d %d", &g[jumlahgerak].x, &g[jumlahgerak].y);
+        while(g[jumlahgerak].x < 0 || g[jumlahgerak].y < 0)
+        {
+            printf("ga bisa mines\n");
+            printf("x dan y : ");
+            scanf("%d %d", &g[jumlahgerak].x, &g[jumlahgerak].y);
+        }
+        fprintf(gerak,"%d %d\n", g[jumlahgerak].x, g[jumlahgerak].y);
+        jumlahgerak++;
+    } fclose(gerak);
+}
+
+void readgerak() {
+    jumlahgerak = 0;
+    FILE *gerak = fopen("tgerak.txt", "r");
+    if (gerak == NULL) {
+        printf("gagal membaca file gerak\n");
+    }
+    else {
+     while(fscanf(gerak,"%d %d", &g[jumlahgerak].x, &g[jumlahgerak].y) == 2){
+      jumlahgerak++;
+     } fclose(gerak);
+     printf("\nData gerak saat ini:\n");
+     for(j = 0; j < jumlahgerak; j++)
+     {
+        printf("Posisi (X:%3d, Y:%3d)\n", g[j].x, g[j].y);
+     }
+    }
+}
+
+/* PROGRAM UTAMA */
 int main() {
     /* memanggil fungsi tampilanAwal() agar judul program ditampilkan saat program pertama kali dijalankan */
     tampilanAwal();  /* panggil di sini */
@@ -154,15 +220,13 @@ int main() {
 
         /* membaca dan menyimpan pilihan menu yang diinput oleh pengguna */
         scanf(" %d", &menu);
-
-       if(menu == 1) {
-          printf("\n Y/N: "); //Meminta konfirmasi dari pengguna untuk menambahkan hadiah, Y/y untuk yes dan N/n untuk no
+        
        /* jika pengguna memilih menu 1, program akan menjalankan proses untuk menambah atau mengubah data hadiah */
        if(menu == 1) { 
-          printf("\n Y/N: ");
+        readhadiah();
+          printf("\n Y/N: "); //Meminta konfirmasi dari pengguna untuk menambahkan hadiah, Y/y untuk yes dan N/n untuk no
           scanf(" %c", &letter);
           if ( letter == 'Y' || letter == 'y'){
-            readhadiah();
             printf("Ketik 1 untuk tambah hadiah atau angka berapapun untuk rewrite hadiah: ");
             scanf("%d", &tambahataurewrite);
             
@@ -172,8 +236,6 @@ int main() {
             yaitu mode yang memungkinkan kita menambah hadiah baru 
             tanpa menghilangkan hadiah yang sudah ada sebelumnya
              */
-
-                readhadiah();
                 appendhadiah();
                 FILE *Thadiah= fopen("thadiah.txt", "w");
                 /*
@@ -188,6 +250,7 @@ int main() {
                 }
                 fprintf(Thadiah, "###");
                 fclose(Thadiah);
+                readhadiah();
             } 
             else {
             /*
@@ -211,30 +274,29 @@ int main() {
         
         /* jika pengguna memilih menu 2, program akan menjalankan proses untuk menambah data gerakan pemain */
         else if(menu == 2) {
+            readgerak();
           printf("\n Y/N: ");
           scanf(" %c", &letter);
           if ( letter == 'Y' || letter == 'y'){
-            int n;
+            printf("Ketik 1 untuk tambah gerak atau angka berapapun untuk rewrite gerak: ");
+            scanf("%d", &tambahataurewrite);
+            if(tambahataurewrite == 1) {
+            appendgerak();
             FILE *gerak = fopen("tgerak.txt", "w");
-            printf("Jumlah gerakan : ");
-            scanf("%d", &n);
-            for(j = 0; j < n; j++)
-        { 
-            printf("Gerakan ke-%d \n", j + 1);
-            printf("x dan y: ");
-            scanf("%d %d", &g[j].x, &g[j].y);
-            while (g[j].x < 0 || g[j].y < 0)
-        {
-           printf("ga bisa mines");
-        break;
-        }
-        
-        fprintf(gerak, "%d %d\n", g[j].x, g[j].y);
+            for(i = 0; i < jumlahgerak; i++) {
+                fprintf(gerak, "%d %d\n", g[i].x, g[i].y);
+             }
+            fprintf(gerak, "###");
+            fclose(gerak);
+            readgerak();}
+            else {
+            writegerak();
+            readgerak();
+} }
+    else {
+        continue;
     }
-    fprintf (gerak,"###");
-    fclose(gerak);
-     } else { continue;
-    }}
+}
 
         /* jika pengguna memilih menu 3, program akan menjalankan simulasi permainan Lite-O */
         else if(menu == 3){
@@ -320,7 +382,7 @@ for (i = 0; i < jumlahHadiah; i++) {
 if (h[i].dimakan) continue; //kalo misal status hadiahnya itu udah "dimakan", maka kita lewati/continue
 if (h[i].y >= 0 && h[i].y < panjang+1 && h[i].x >= 0 && h[i].x < lebar+1) { //kode buat mastiin kalo hadiah itu ga ngelewatin batas papan
     
-    char tulisan[64];
+    char tulisan[100];
     sprintf(tulisan, "%s%d", h[i].nama, h[i].skor); /* gabungkan nama dan skor jadi satu teks, contoh: "aa5" */
     for (k = 0; tulisan[k] != '\0' && (h[i].x + 1 + k) < lebar+2; k++) {
         map[h[i].y + 1][h[i].x + 1 + k] = tulisan[k]; /* tulis huruf per huruf ke map */
@@ -345,8 +407,17 @@ map[g[j].y + 1][g[j].x + 1] = player;
                     printf("\033[90m%c \033[0m", map[a][b]); 
                 }
                 /* jika posisi ini bukan dinding, bukan pemain, dan bukan kosong, berarti ini hadiah, tampilkan dengan warna cyan */
-                else if (map[a][b] != ' ') {
-                    printf("\033[96m%c \033[0m", map[a][b]); 
+                else if (map[a][b] != ' ') { 
+                    int warna = (a) % 4;
+                if (warna == 0) {
+                printf("\033[91m%c \033[0m", map[a][b]); // merah
+                } else if (warna == 1) {
+                printf("\033[92m%c \033[0m", map[a][b]); // hijau
+                } else if (warna == 2) {
+                printf("\033[93m%c \033[0m", map[a][b]); // kuning
+                } else if (warna == 3) {
+                printf("\033[96m%c \033[0m", map[a][b]); // cyan
+                }
                 }
                 else {
                  /* jika posisi ini kosong, tampilkan spasi biasa tanpa warna */
@@ -373,6 +444,6 @@ map[g[j].y + 1][g[j].x + 1] = player;
         else {
             printf("\nPilihan tidak valid! Silakan masukkan angka 1-4.\n");
         }
-    } 
+     }
     return 0;
 }
