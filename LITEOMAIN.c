@@ -19,14 +19,16 @@ typedef struct {
 } Gerak;
 
 /* Kode waktu dari Pak Panji */
-
+/* Fungsi tahan() ini dibuat untuk memberikan jeda waktu eksekusi. jadi waktu saat fungsi 
+ini dipanggil, saat menjalankan loop akan menahan alur eksekusi sampai selisih waktunya (difftime)
+mencapai x detik. Efeknya, saat simulasi berjalan, pergerakan karakter 'O' nggak akan langsung selesai dalam sekejap */
 void tahan(float x) {
     time_t start;
     time_t current;
     time(&start);
     do
         time(&current);
-    while (difftime(current, start) < x);
+    while (difftime(current, start) < x); // Loop menahan eksekusi selama selisih waktu belum x detik
 }
 
 /* VARIABEL GLOBAL */
@@ -43,11 +45,15 @@ Hadiah h[10000];       /* array untuk menyimpan seluruh data hadiah, maksimal 10
 char player = 'O';     /* karakter yang melambangkan posisi pemain di papan permainan, defaultnya 'O' */
 int skor = 0;          /* total skor yang sudah didapatkan pemain selama permainan berlangsung */
 char bentukhadiah = '*';/* karakter yang melambangkan bentuk hadiah di papan permainan */
-int a,b,k, n;             /* variabel a, b, k, dipakai sebagai variabel perulangan (looping) di berbagai fungsi */
+int a,b,k,n;             /* variabel a, b, k, n dipakai sebagai variabel perulangan (looping) di berbagai fungsi */
 int jumlahHadiah, jumlahgerak;      /* jumlah hadiah dan gerak yang sedang tersimpan dan aktif di dalam program */
 char letter;           /* menyimpan jawaban Y/N dari pengguna saat ditanya konfirmasi */
 int tulisan;
 
+/*Fungsi ini jalan ketika user memilih 1, untuk menulis ulang seluruh data hadiah. Dengan
+menggunakan mode "w" (write), otomatis isi file lama akan dibersihkan dari nol. Setelah itu, program
+akan melakukan perulangan untuk menyimpan data-data baru yang di-input user ke dalam array
+sekaligus mencetaknya langsung ke dalam file teks.*/
 void writehadiah() {
       FILE *Thadiah= fopen("thadiah.txt", "w") ;
             printf("Jumlah hadiah : ");
@@ -55,16 +61,20 @@ void writehadiah() {
             for(i = 0; i < hadiah; i++){
             printf("Input hadiah ke-%d:\n", i + 1);
              printf("x, y, nama, skor1 : ");
-             scanf("%d %d %s %d", &h[i].x, &h[i].y, h[i].nama, &h[i].skor);
+             scanf("%d %d %s %d", &h[i].x, &h[i].y, h[i].nama, &h[i].skor);// Simpan ke array memori h[] dan langsung tulis ke file di fprintf
              fprintf(Thadiah, "%d %d %s %d\n", h[i].x, h[i].y, h[i].nama, h[i].skor);
         }
             fprintf(Thadiah, "###");
             fclose(Thadiah); 
 }
-
+/*Sebelum data hadiah bisa diurutkan atau dipakai, program harus memuatnya terlebih dahulu dari
+penyimpanan lokal. Berkas thadiah.txt dibuka dengan mode "r" (read). Variabel jumlahHadiah
+di-reset ke angka 0 agar data tidak tumpang tindih. Kemudian, perulangan while yang
+dikombinasikan dengan fscanf akan membaca data baris demi baris, lalu memasukkannya ke dalam
+array h[] selama format datanya cocok (mengembalikan nilai 4). */
 void readhadiah () {
     Hadiah temp;
-    jumlahHadiah = 0;
+    jumlahHadiah = 0;// Reset counter ke 0 sebelum membaca agar data tidak duplikat
     FILE *Thadiah = fopen("thadiah.txt", "r");
     if (Thadiah == NULL)
     {
@@ -72,10 +82,22 @@ void readhadiah () {
     }
     else
     {
-        while (fscanf(Thadiah, "%d %d %s %d", &h[jumlahHadiah].x, &h[jumlahHadiah].y, h[jumlahHadiah].nama, &h[jumlahHadiah].skor) == 4)
-        {
-            jumlahHadiah++;
+        while (fscanf(Thadiah, "%d %d %s %d", &h[jumlahHadiah].x, &h[jumlahHadiah].y, h[jumlahHadiah].nama, &h[jumlahHadiah].skor) == 4) // disini transform h[i] ditimpa ke h[jumlahahdiah] (sebenrnya ga ditimpa sih wkwk, cuman di copy)
+        { /*huruf kayak h[i] atau g[j], itu dipakai pas di dalam perulangan for buat ngebaca data satu-satu secara bergantian,
+             contohnya pas program lagi nge-sort posisi koordinat hadiah atau lagi nge-render gerakan si 'O' di map dari awal 
+             sampai akhir. Nah, kalau pakai h[jumlahHadiah] atau g[jumlahgerak], itu khusus dipakai pas fungsi append buat
+              langsung nembak indeks paling akhir yang masih kosong, tujuannya murni untuk nyimpen data hadiah atau koordinat gerakan
+               baru yang baru saja di-input sama user biar data lama nggak ketimpa.*/
+            jumlahHadiah++;// Indeks array naik terus setiap kali ada data baru yang masuk
+
         }
+        /* Algoritma Bubble Sort di bawah ini bertugas buat mengurutkan data hadiah di memori
+secara menaik (ascending) berdasarkan koordinat Y, dan kalau koordinat Y-nya kembar, bakal
+diurutin dari koordinat X.
+Proses sorting ini penting banget biar urutan indeks di array global 'h[]' bener-bener urut.
+Efeknya, pas program nge-render peta dari baris atas ke bawah, proses pemetaan posisi hadiah
+jadi sinkron dan nggak acak-acakan. */ 
+
         for (i = 0; i < jumlahHadiah - 1; i++)
         {
             for (j = 0; j < jumlahHadiah - 1 - i; j++)
@@ -89,6 +111,13 @@ void readhadiah () {
             }
         }
         fclose(Thadiah);
+
+        /*Ketika proses pengurutan di dalam array memori selesai, kondisi isi berkas fisik thadiah.txt masih
+blom kecetak dan dibaca. Oleh karena itu, file ditutup terlebih dahulu lalu langsung dibuka kembali
+menggunakan mode "w" (write). Langkah penulisan ulang (overwrite) ini bertujuan untuk
+memindahkan struktur data yang sudah rapi dari memori kembali ke storage berkas teks agar isinya
+sinkron. */
+
         Thadiah = fopen("thadiah.txt", "w");
         printf("\nData hadiah saat ini:\n");
 
@@ -103,7 +132,12 @@ void readhadiah () {
         fclose(Thadiah);
     }
 }
-
+/* Fungsi ini dipanggil pas user mau nambahin data hadiah baru tanpa ngehapus data yang lama
+(mode append).
+Buka file pake mode "a" bikin data baru langsung nempel di bagian paling bawah file 'thadiah.txt'.
+Data yang di-input bakal disimpen ke array global 'h[]' mulai dari indeks ke-'jumlahHadiah',
+terus variabel 'jumlahHadiah' langsung di-increment (ditambah 1) biar total hadiah yang aktif di
+memori tetep akurat. */ 
 void appendhadiah()
 {
     FILE *Thadiah = fopen("thadiah.txt", "a");
@@ -133,7 +167,7 @@ void tampilanAwal() {
     printf("\033[92mTITLE LITE-O\033[0m\n\n"); /* menampilkan tulisan "TITLE LITE-O" dengan warna hijau */
 }
 
-
+// sebenernya kurleb sama logika nya seperti file sequential hadiah
 void writegerak() {
 
     FILE *gerak = fopen("tgerak.txt", "w");
@@ -206,7 +240,7 @@ int main() {
     printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
     scanf("%d %d", &panjang, &lebar);
     /* membuat papan permainan berupa array 2 dimensi, sesuai ukuran panjang dan lebar yang diinput */
-     char map[panjang+3][lebar+3];
+     char map[panjang+3][lebar+3];// karena di modul pa panji itu + 3, artinya koordinat  dari 0,0 dan atas/bawah/kiri/kanan itu kepotong
 
 /* perulangan utama program, akan terus berjalan selama belum dihentikan (menu 4 / keluar) */
  while(1) {
@@ -260,7 +294,6 @@ int main() {
                 writehadiah();
                 readhadiah();
             FILE *Thadiah= fopen("thadiah.txt", "w");
-            // proses input hadiah, kurang lebih prosesnya sama kayak di mode append tadi
 
             for(i = 0; i < jumlahHadiah; i++) {
                  fprintf(Thadiah, "%d %d %s %d\n", h[i].x, h[i].y, h[i].nama, h[i].skor);
@@ -273,6 +306,14 @@ int main() {
 
         
         /* jika pengguna memilih menu 2, program akan menjalankan proses untuk menambah data gerakan pemain */
+        /* Pas masuk menu 2, fungsi readgerak() dipanggil duluan buat ngasih liat riwayat gerakan saat
+ini sebagai referensi.
+Kalau user konfirmasi pilihan dengan input 'Y' atau 'y', alur data bakal bercabang:
+- Input '1' bakal micu mode append (nambah gerak), terus array diperbarui dan ditulis ulang ke file
+via mode "w".
+- Input selain '1' bakal langsung masuk ke mode rewrite (bikin dari nol).
+Tapi, kalau syarat huruf 'Y/y' nggak terpenuhi, perintah 'continue' bakal langsung ngelempar alur
+program balik ke awal loop menu utama. */
         else if(menu == 2) {
             readgerak();
           printf("\n Y/N: ");
@@ -406,7 +447,7 @@ map[g[j].y + 1][g[j].x + 1] = player;
                 else if (map[a][b] == '-' || map[a][b] == '|') {
                     printf("\033[90m%c \033[0m", map[a][b]); 
                 }
-                /* jika posisi ini bukan dinding, bukan pemain, dan bukan kosong, berarti ini hadiah, tampilkan dengan warna cyan */
+                /* jika posisi ini bukan dinding, bukan pemain, dan bukan kosong, berarti ini hadiah, tampilkan dengan 4 warna sesuai x / a nya */
                 else if (map[a][b] != ' ') { 
                     int warna = (a) % 4;
                 if (warna == 0) {
