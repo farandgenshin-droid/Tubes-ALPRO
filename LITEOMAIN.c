@@ -147,7 +147,7 @@ int main() {
         scanf(" %d", &menu);
 
        if(menu == 1) {
-          printf("\n Y/N: ");
+          printf("\n Y/N: "); //Meminta konfirmasi dari pengguna untuk menambahkan hadiah, Y/y untuk yes dan N/n untuk no
           scanf(" %c", &letter);
           if ( letter == 'Y' || letter == 'y'){
             readhadiah();
@@ -155,10 +155,21 @@ int main() {
             scanf("%d", &tambahataurewrite);
             
             if (tambahataurewrite == 1) {
+            /*
+            nah kalo si pengguna input angka 1, maka akan masuk ke mode append
+            yaitu mode yang memungkinkan kita menambah hadiah baru 
+            tanpa menghilangkan hadiah yang sudah ada sebelumnya
+             */
 
                 readhadiah();
                 appendhadiah();
                 FILE *Thadiah= fopen("thadiah.txt", "w");
+                /*
+                Proses penginputan hadiah baru
+                diawali dengan membuka file thadiah.txt
+                kemudian melakukan input pada hadiah sesuai dengan struct
+                dan diakhiri dengan menutup sekaligus menyimpan file thadiah.txt
+                */
 
                 for(i = 0; i < jumlahHadiah; i++) {
                     fprintf(Thadiah, "%d %d %s %d\n", h[i].x, h[i].y, h[i].nama, h[i].skor);
@@ -167,9 +178,14 @@ int main() {
                 fclose(Thadiah);
             } 
             else {
+            /*
+            nah kalo ini kondisi dimana si pengguna tadi tuh menginputkan selain angka 1
+            yang membuat program ini masuk ke mode rewrite
+            yaitu menghapus semua data hadiah yang sudah ada, dan memasukkan data hadiah yang baru*/
                 writehadiah();
                 readhadiah();
             FILE *Thadiah= fopen("thadiah.txt", "w");
+            // proses input hadiah, kurang lebih prosesnya sama kayak di mode append tadi
 
             for(i = 0; i < jumlahHadiah; i++) {
                  fprintf(Thadiah, "%d %d %s %d\n", h[i].x, h[i].y, h[i].nama, h[i].skor);
@@ -177,7 +193,7 @@ int main() {
             fprintf(Thadiah, "###");
             fclose(Thadiah);
             }
-        } else { continue;
+        } else { continue; 
         }}
 
         
@@ -248,13 +264,19 @@ for (i = 0; i < jumlahHadiah; i++) {
     if (!h[i].dimakan && h[i].x == g[j].x && h[i].y == g[j].y) {
         skor += h[i].skor;
         h[i].dimakan = 1;
+    /*
+    nah ini kalo hadiahnya belum dimakan, kemudian koordinat si O nih sama kayak koordinat hadiah
+    berarti si hadiah ini otomatis kayak kemakan gitu sama si O
+    terus skor yang ada di hadiah itu ditambahin ke skor si O
+    */
     }
 }
 
 /* gambar hadiah yang belum dimakan, ditulis sebagai nama+skor (mis. "aa5") */
 for (i = 0; i < jumlahHadiah; i++) {
-if (h[i].dimakan) continue;
-if (h[i].y >= 0 && h[i].y < panjang+1 && h[i].x >= 0 && h[i].x < lebar+1) {
+if (h[i].dimakan) continue; //kalo misal status hadiahnya itu udah "dimakan", maka kita lewati/continue
+if (h[i].y >= 0 && h[i].y < panjang+1 && h[i].x >= 0 && h[i].x < lebar+1) { //kode buat mastiin kalo hadiah itu ga ngelewatin batas papan
+    
     char tulisan[64];
     sprintf(tulisan, "%s%d", h[i].nama, h[i].skor); /* gabungkan nama dan skor jadi satu teks, contoh: "aa5" */
     for (k = 0; tulisan[k] != '\0' && (h[i].x + 1 + k) < lebar+2; k++) {
@@ -287,10 +309,10 @@ map[g[j].y + 1][g[j].x + 1] = player;
             printf("\n");
     }
 
-        printf("\nPosisi O : (%d,%d)\n", g[j].x, g[j].y);
-        printf("Skor O : %d\n", skor);
+        printf("\nPosisi O : (%d,%d)\n", g[j].x, g[j].y); //ini buat mencetak koordinat si O secara real time
+        printf("Skor O : %d\n", skor); //ini buat mencetak total skor si O
 
-        tahan(1);
+        tahan(1); //ini buat jeda 1 detik, sebelum memproses ke gerakan selanjutnya
     } 
     fclose(gerak);
 }
