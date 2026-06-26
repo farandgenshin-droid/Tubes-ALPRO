@@ -1,19 +1,21 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-/* TIPE DATA */
+#include <stdio.h>   /* Library untuk fungsi input/output dasar, seperti printf dan scanf */
+#include <stdlib.h>  /* Library untuk fungsi umum, seperti exit() dan alokasi memori */
+#include <string.h>. /* Library untuk fungsi-fungsi yang berhubungan dengan teks/string */
+#include <time.h>    /* Library untuk fungsi yang berhubungan dengan waktu, dipakai di fungsi tahan() */
+
+/* Struktur data untuk menyimpan informasi satu hadiah di dalam permainan */
 typedef struct {
-    int x;
-    int y;
-    char nama[50];
-    int skor;
-    int dimakan;
+    int x;          /* posisi hadiah pada sumbu x (kolom) */
+    int y;          /* posisi hadiah pada sumbu y (baris) */
+    char nama[50];  /* nama atau simbol untuk hadiah, contoh "aa" */
+    int skor;       /* jumlah skor yang didapat jika hadiah ini dimakan oleh pemain */
+    int dimakan;    /* status hadiah: 0 berarti belum dimakan, 1 berarti sudah dimakan */
 } Hadiah;
 
+/* Struktur data untuk menyimpan satu gerakan pemain, berupa koordinat x dan y */
 typedef struct {
-    int x;
-    int y;
+    int x; /* posisi x tujuan gerakan pemain */
+    int y; /* posisi y tujuan gerakan pemain */
 } Gerak;
 
 /* Kode waktu dari Pak Panji */
@@ -29,22 +31,21 @@ void tahan(float x) {
 
 /* VARIABEL GLOBAL */
 
-
-int panjang, lebar;
-int hadiah;
-int i = 0;
-int j = 0;
-int tambahataurewrite;
-int menu;
-int x,y;
-Gerak g[10000];
-Hadiah h[10000];
-char player = 'O'; 
-int skor = 0;
-char bentukhadiah = '*';
-int a,b,k;
-int jumlahHadiah;
-char letter;
+int panjang, lebar;    /* panjang dan lebar papan permainan, diisi oleh pengguna di awal program */
+int hadiah;            /* jumlah hadiah yang akan diinput oleh pengguna */
+int i = 0;             /* variabel i, dipakai sebagai variabel perulangan (looping) di berbagai fungsi */
+int j = 0;             /* variabel j, dipakai sebagai variabel perulangan (looping) di berbagai fungsi */
+int tambahataurewrite; /* pilihan pengguna: mau menambah hadiah baru atau menulis ulang seluruh data hadiah */
+int menu;              /* menyimpan pilihan menu yang diinput oleh pengguna (1 sampai 4) */
+int x,y;               /* variabel x dan y, dipakai sebagai variabel bantuan umum */
+Gerak g[10000];        /* array untuk menyimpan seluruh data gerakan pemain, maksimal 10000 gerakan */
+Hadiah h[10000];       /* array untuk menyimpan seluruh data hadiah, maksimal 10000 hadiah */
+char player = 'O';     /* karakter yang melambangkan posisi pemain di papan permainan, defaultnya 'O' */
+int skor = 0;          /* total skor yang sudah didapatkan pemain selama permainan berlangsung */
+char bentukhadiah = '*';/* karakter yang melambangkan bentuk hadiah di papan permainan */
+int a,b,k;             /* variabel a, b, k, dipakai sebagai variabel perulangan (looping) di berbagai fungsi */
+int jumlahHadiah;      /* jumlah hadiah yang sedang tersimpan dan aktif di dalam program */
+char letter;           /* menyimpan jawaban Y/N dari pengguna saat ditanya konfirmasi */
 
 void writehadiah() {
       FILE *Thadiah= fopen("thadiah.txt", "w") ;
@@ -117,26 +118,33 @@ void appendhadiah()
     }
     fclose(Thadiah);
 }
+/* Fungsi untuk menampilkan judul program "LITE-O" dalam bentuk tulisan besar saat program dijalankan */
 void tampilanAwal() {
+    /* mengatur warna teks menjadi kuning untuk menampilkan judul besar */
     printf("\033[93m");
     printf("#      #####  #####  #####         #####\n");
     printf("#        #      #    #             #   #\n");
     printf("#        #      #    #####  #####  #   #\n");
     printf("#        #      #    #             #   #\n");
     printf("#####  #####    #    #####         #####\n");
-    printf("\033[0m");
-    printf("\033[92mTITLE LITE-O\033[0m\n\n");
+    printf("\033[0m");  /* mengembalikan warna teks ke warna normal/default */
+    printf("\033[92mTITLE LITE-O\033[0m\n\n"); /* menampilkan tulisan "TITLE LITE-O" dengan warna hijau */
 }
 /* PROGRAM UTAMA */
 
 int main() {
-    tampilanAwal();   // panggil di sini
-    printf("Selamat Datang di Program Lite-O\n");
+    /* memanggil fungsi tampilanAwal() agar judul program ditampilkan saat program pertama kali dijalankan */
+    tampilanAwal();  /* panggil di sini */
+    printf("Selamat Datang di Program Lite-O\n"); 
+    /* meminta pengguna memasukkan ukuran papan permainan (panjang dan lebar) */
     printf("Masukan Panjang dan Lebar (pisahkan dengan spasi) : ");
     scanf("%d %d", &panjang, &lebar);
+    /* membuat papan permainan berupa array 2 dimensi, sesuai ukuran panjang dan lebar yang diinput */
      char map[panjang+3][lebar+3];
 
+/* perulangan utama program, akan terus berjalan selama belum dihentikan (menu 4 / keluar) */
  while(1) {
+        /* menampilkan daftar pilihan menu kepada pengguna */
         printf("Menu:\n");
         printf("1.Tambah hadiah\n");
         printf("2.Tambah gerak\n");
@@ -144,10 +152,14 @@ int main() {
         printf("4.Keluar\n");
         printf("Masukan Menu (1-4) : ");
 
+        /* membaca dan menyimpan pilihan menu yang diinput oleh pengguna */
         scanf(" %d", &menu);
 
        if(menu == 1) {
           printf("\n Y/N: "); //Meminta konfirmasi dari pengguna untuk menambahkan hadiah, Y/y untuk yes dan N/n untuk no
+       /* jika pengguna memilih menu 1, program akan menjalankan proses untuk menambah atau mengubah data hadiah */
+       if(menu == 1) { 
+          printf("\n Y/N: ");
           scanf(" %c", &letter);
           if ( letter == 'Y' || letter == 'y'){
             readhadiah();
@@ -197,6 +209,7 @@ int main() {
         }}
 
         
+        /* jika pengguna memilih menu 2, program akan menjalankan proses untuk menambah data gerakan pemain */
         else if(menu == 2) {
           printf("\n Y/N: ");
           scanf(" %c", &letter);
@@ -222,6 +235,8 @@ int main() {
     fclose(gerak);
      } else { continue;
     }}
+
+        /* jika pengguna memilih menu 3, program akan menjalankan simulasi permainan Lite-O */
         else if(menu == 3){
 j = 0;
 FILE *gerak = fopen("tgerak.txt", "r");
@@ -288,21 +303,25 @@ if (h[i].y >= 0 && h[i].y < panjang+1 && h[i].x >= 0 && h[i].x < lebar+1) { //ko
 if (g[j].y >= 0 && g[j].y < panjang+1 && g[j].x >= 0 && g[j].x < lebar+1){
 map[g[j].y + 1][g[j].x + 1] = player;
 }  
-
+        /* menampilkan seluruh isi papan permainan ke layar, baris demi baris */
         for (a = 0; a < panjang + 3; a++)
         {
             for (b = 0; b < lebar + 3; b++)
             {
+                /* jika posisi ini adalah posisi pemain, tampilkan dengan warna ungu */
                 if (map[a][b] == player) {
-                    printf("\033[95m%c \033[0m", map[a][b]); // player warna ungu
+                    printf("\033[95m%c \033[0m", map[a][b]); 
                 }
+                /* jika posisi ini adalah dinding/batas papan, tampilkan dengan warna abu-abu */
                 else if (map[a][b] == '-' || map[a][b] == '|') {
-                    printf("\033[90m%c \033[0m", map[a][b]); // dinding warna abu-abu
+                    printf("\033[90m%c \033[0m", map[a][b]); 
                 }
+                /* jika posisi ini bukan dinding, bukan pemain, dan bukan kosong, berarti ini hadiah, tampilkan dengan warna cyan */
                 else if (map[a][b] != ' ') {
-                    printf("\033[96m%c \033[0m", map[a][b]); // hadiah warna (bukan dinding, bukan player, bukan spasi)
+                    printf("\033[96m%c \033[0m", map[a][b]); 
                 }
                 else {
+                 /* jika posisi ini kosong, tampilkan spasi biasa tanpa warna */
                 printf("%c ", map[a][b]);
             }
         }
@@ -316,10 +335,13 @@ map[g[j].y + 1][g[j].x + 1] = player;
     } 
     fclose(gerak);
 }
+
+    /* jika pengguna memilih menu 4, program akan menampilkan ucapan terima kasih lalu mengakhiri program */
     else if(menu == 4) {
             printf("\nTerima kasih telah bermain!\n");
             system("exit");
         }
+        /* jika pengguna memasukkan pilihan selain 1 sampai 4, program akan menampilkan pesan pilihan tidak valid */
         else {
             printf("\nPilihan tidak valid! Silakan masukkan angka 1-4.\n");
         }
