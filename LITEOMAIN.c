@@ -243,30 +243,58 @@ FILE *gerak = fopen("tgerak.txt", "r");
 if (gerak == NULL){
     break;}
 
+/* inisialiasi variabel index i dengan nilai 0 untuk menghitung jumlah data hadiah yang dibaca dari file thadiah.txt */
 i = 0;
+
+/* membuka file thadiah.txt dalam mode baca ("r") */
 FILE *ThadiahAwal = fopen("thadiah.txt", "r");
+
+/* memeriksa apakah file thadiah.txt berhasil dibuka (tidak NULL) */
 if (ThadiahAwal != NULL) {
+
+    /* membaca data dari file thadiah.txt menggunakan fscanf, dan menyimpannya ke dalam array h[] sesuai dengan struktur Hadiah */
     while (fscanf(ThadiahAwal, "%d %d %s %d", &h[i].x, &h[i].y, h[i].nama, &h[i].skor) == 4) {
+
+        /* menginisialisasi status dimakan dari hadiah yang baru dibaca menjadi 0 (belum dimakan) */
         h[i].dimakan = 0;
+
+        /* menambah index untuk data hadiah berikutnya */
         i++;
     }
+
+    /* menyimpan jumlah total hadiah yang berhasil dibaca dari file ke dalam variabel jumlahHadiah */
     jumlahHadiah = i;
+
+    /* menutup file thadiah.txt setelah selesai membaca data */
     fclose(ThadiahAwal);
 }
+/* mengatur skor awal pemain menjadi 0 sebelum memulai simulasi permainan */
 skor = 0;
 
+/* membaca file gerak.txt untuk setiap gerakan. 
+proses berlanjut selama berhasil membaca dua nilai integer */
 while (fscanf(gerak,"%d %d", &g[j].x, &g[j].y) == 2 ){
+
+    /* membersihkan layar untuk menampilkan papan permainan yang baru */
     system ("cls");
+
+    /* perulangan untuk menggambar papan permainan dengan ukuran panjang+3 baris dan lebar+3 kolom */
         for (a = 0; a < panjang+3; a++) {
          for (b = 0; b < lebar+3; b++) {
+
+        /* mengatur batas papan */
         if (b == 0 || b == lebar+2)
         {
             map[a][b] = '|';
         }
+
+        /* mengatur aturan papan */
         else if (a == 0 || a == panjang+2)
         {
             map[a][b] = '-';
         }
+
+        /* mengatur isi papan */
         else
         {
             map[a][b] = ' ';
